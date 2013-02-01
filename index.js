@@ -12,16 +12,25 @@ var bot = mineflayer.createBot({
 
 var COMFORTABLE_FIRING_RADIUS = 20;
 var ANNOUNCE_INTERVAL = 1000 * 60 * 10;
+var MIN_MOVE_INTERVAL = 5000;
+var MAX_MOVE_INTERVAL = 10000;
+var MIN_SHOOT_INTERVAL = 100;
+var MAX_SHOOT_INTERVAL = 6000;
 
 var targetUsername = null;
+var targetVelocity = vec3(0, 0, 0);
 var lastAnnounceDate = null;
 var lastAnnounceMsg = null;
+var shootingArrow = false;
+var previousPosition = null;
+var previousPositionDate = null;
 
 navigatePlugin(bot);
 
 bot.once('spawn', function() {
-  setInterval(moveRandomly, 5000);
+  setTimeout(moveRandomly, MIN_MOVE_INTERVAL);
   setInterval(checkState, 5000);
+  setTimeout(shootArrow, MIN_SHOOT_INTERVAL);
   checkState();
 });
 
@@ -39,6 +48,20 @@ bot.on('entityGone', function(entity) {
   if (entity.username === targetUsername) {
     bot.chat(targetUsername + ", you coward! You have forfeited the challenge by running away.");
     endChallenge();
+  }
+});
+
+bot.on('entityMoved', function(entity) {
+  if (entity.username === targetUsername) {
+    var now = new Date();
+    if (previousPositionDate != null) {
+      var deltaTime = now - previousPositionDate;
+      if (deltaTime > 0.000001) {
+        targetVelocity = entity.position.minus(previousPosition).scaled(1 / deltaTime);
+      }
+    }
+    previousPositionDate = now;
+    previousPosition = entity.position.clone();
   }
 });
 
@@ -74,8 +97,41 @@ function moveTowardSpawn() {
   });
 }
 
+function shootArrow() {
+  if (! targetUsername) return scheduleNext();
+  var entity = bot.players[targetUsername].entity;
+  if (! entity) return scheduleNext();
+  bot.navigate.stop();
+  shootingArrow = true;
+  bot.activateItem();
+  var lookInterval = setInterval(look, 20);
+  setTimeout(release, 1500);
+
+  function look() {
+    var distance = bot.entity.position.distanceTo(entity.position);
+    var heightAdjust = entity.height * 0.8 + (distance * 0.05);
+    bot.lookAt(entity.position.offset(0, heightAdjust, 0).plus(targetVelocity.scaled(650)));
+  }
+
+  function release() {
+    shootingArrow = false;
+    clearInterval(lookInterval);
+    look();
+    bot.deactivateItem();
+    moveRandomly();
+    scheduleNext();
+  }
+
+  function scheduleNext() {
+    var nextShootMs = MIN_SHOOT_INTERVAL + Math.random() * (MAX_SHOOT_INTERVAL - MIN_SHOOT_INTERVAL);
+    setTimeout(shootArrow, nextShootMs);
+  }
+}
 
 function moveRandomly() {
+  var nextMoveMs = MIN_MOVE_INTERVAL + Math.random() * (MAX_MOVE_INTERVAL - MIN_MOVE_INTERVAL);
+  setTimeout(moveRandomly, nextMoveMs);
+  if (shootingArrow) return;
   if (! targetUsername) return moveTowardSpawn();
   var entity = bot.players[targetUsername].entity;
   if (! entity) return moveTowardSpawn();
