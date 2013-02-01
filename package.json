@@ -3,7 +3,13 @@
   "version": "0.0.0",
   "description": "mineflayer bot that engages you in a gentlemanly duel",
   "main": "index.js",
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/superjoe30/archerbot.git"
+  },
+  "bin": {
+    "archerbot": "./index.js"
+  },
   "author": "Andrew Kelley <superjoe30@gmail.com>",
   "license": "BSD",
   "dependencies": {
