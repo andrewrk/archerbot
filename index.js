@@ -46,7 +46,7 @@ bot.on('whisper', function(username) {
 
 bot.on('entityGone', function(entity) {
   if (entity.username === targetUsername) {
-    bot.chat(targetUsername + ", you coward! You have forfeited the challenge by running away.");
+    bot.chat("I have defeated " + targetUsername + ".");
     endChallenge();
   }
 });
