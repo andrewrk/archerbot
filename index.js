@@ -147,7 +147,7 @@ function moveRandomly() {
     if (block && block.boundingBox !== 'empty') break;
   }
   bot.navigate.to(dest, {
-    endRadius: 2,
+    endRadius: 10,
     timeout: 2000,
   });
 }
