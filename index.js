@@ -158,9 +158,10 @@ function oldAnnouncement() {
 }
 
 function haveEquipment() {
-  var haveBow = bot.inventory.count(261) > 0;
+  var bowItem = bot.inventory.findInventoryItem(261);
+  if (bowItem) bot.equip(bowItem, 'hand');
   var arrowCount = bot.inventory.count(262);
-  return haveBow && arrowCount >= 30;
+  return bowItem != null && arrowCount >= 30;
 }
 
 function announce(msg) {
