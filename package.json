@@ -7,6 +7,8 @@
   "author": "Andrew Kelley <superjoe30@gmail.com>",
   "license": "BSD",
   "dependencies": {
-    "mineflayer": "0.0.21"
+    "mineflayer": "0.0.21",
+    "mineflayer-navigate": "0.0.4",
+    "optimist": "~0.3.5"
   }
 }
