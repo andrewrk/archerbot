@@ -65,8 +65,8 @@ bot.on('entityMoved', function(entity) {
   }
 });
 
-bot.navigate.on('cannotFind', function() {
-  console.info("cannot find path");
+bot.navigate.on('cannotFind', function(closestPath) {
+  bot.navigate.walk(closestPath);
 });
 
 bot.on('death', function() {
@@ -93,7 +93,7 @@ function challenge(username) {
 function moveTowardSpawn() {
   bot.navigate.to(bot.spawnPoint, {
     endRadius: 50,
-    timeout: 3000,
+    timeout: 1000,
   });
 }
 
@@ -148,7 +148,7 @@ function moveRandomly() {
   }
   bot.navigate.to(dest, {
     endRadius: 10,
-    timeout: 2000,
+    timeout: 1000,
   });
 }
 
