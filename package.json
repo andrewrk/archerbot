@@ -1,6 +1,6 @@
 {
   "name": "archerbot",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "mineflayer bot that engages you in a gentlemanly duel",
   "main": "index.js",
   "repository": {
