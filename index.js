@@ -85,16 +85,13 @@ function challenge(username) {
     bot.tell(username, "I am in the middle of a duel with " + targetUsername + ".");
     return;
   }
+  if (! bot.players[username].entity) {
+    bot.tell(username, "You are too far away to challenge me. I am at " + bot.entity.position);
+    return;
+  }
   targetUsername = username;
   checkState();
   moveRandomly();
-}
-
-function moveTowardSpawn() {
-  bot.navigate.to(bot.spawnPoint, {
-    endRadius: 50,
-    timeout: 1000,
-  });
 }
 
 function shootArrow() {
@@ -132,9 +129,9 @@ function moveRandomly() {
   var nextMoveMs = MIN_MOVE_INTERVAL + Math.random() * (MAX_MOVE_INTERVAL - MIN_MOVE_INTERVAL);
   setTimeout(moveRandomly, nextMoveMs);
   if (shootingArrow) return;
-  if (! targetUsername) return moveTowardSpawn();
+  if (! targetUsername) return;
   var entity = bot.players[targetUsername].entity;
-  if (! entity) return moveTowardSpawn();
+  if (! entity) return;
   // plot a circle around player with a comfortable firing radius.
   // go to a random point on that circle
   var angle = Math.random() * 2 * Math.PI;
@@ -175,8 +172,8 @@ function checkState() {
   if (targetUsername) {
     announce("I am currently dueling " + targetUsername);
   } else if (haveEquipment()) {
-    announce("I challenge anyone to a gentlemanly duel. Say 'challenge' to accept.");
+    announce("I challenge anyone to a gentlemanly duel. Say 'challenge' to accept. I am at " + bot.entity.position);
   } else {
-    announce("I will not accept challenges until I have a bow and at least 30 arrows.");
+    announce("I will not accept challenges until I have a bow and at least 30 arrows. I am at " + bot.entity.position);
   }
 }
