@@ -86,7 +86,7 @@ function challenge(username) {
     return;
   }
   if (! bot.players[username].entity) {
-    bot.tell(username, "You are too far away to challenge me. I am at " + bot.entity.position);
+    bot.tell(username, "You are too far away to challenge me. I am at " + bot.entity.position.floored());
     return;
   }
   targetUsername = username;
@@ -172,8 +172,8 @@ function checkState() {
   if (targetUsername) {
     announce("I am currently dueling " + targetUsername);
   } else if (haveEquipment()) {
-    announce("I challenge anyone to a gentlemanly duel. Say 'challenge' to accept. I am at " + bot.entity.position);
+    announce("I challenge anyone to a gentlemanly duel. Say 'challenge' to accept. I am at " + bot.entity.position.floored());
   } else {
-    announce("I will not accept challenges until I have a bow and at least 30 arrows. I am at " + bot.entity.position);
+    announce("I will not accept challenges until I have a bow and at least 30 arrows. I am at " + bot.entity.position.floored());
   }
 }
